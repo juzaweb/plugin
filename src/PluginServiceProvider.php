@@ -28,7 +28,7 @@ class PluginServiceProvider extends ModulesServiceProvider
         $this->setupStubPath();
         $this->registerProviders();
 
-        if (config('mymo.plugin.autoload')) {
+        if (config('juzaweb.plugin.autoload')) {
             $this->pluginAutoload();
         }
     }
