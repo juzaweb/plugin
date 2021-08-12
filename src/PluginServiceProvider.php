@@ -38,7 +38,7 @@ class PluginServiceProvider extends ModulesServiceProvider
      */
     public function setupStubPath()
     {
-        Stub::setBasePath(__DIR__ . '/../../stubs/plugin');
+        Stub::setBasePath(__DIR__ . '/../stubs');
 
         /*$this->app->booted(function ($app) {
             $moduleRepository = $app[RepositoryInterface::class];

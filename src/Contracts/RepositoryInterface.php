@@ -3,7 +3,7 @@
 namespace Juzaweb\Plugin\Contracts;
 
 use Juzaweb\Plugin\Exceptions\ModuleNotFoundException;
-use Juzaweb\Plugin\Plugin;
+use Juzaweb\Plugin\Support\Plugin;
 
 interface RepositoryInterface
 {

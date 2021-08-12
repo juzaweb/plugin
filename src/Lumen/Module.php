@@ -3,7 +3,7 @@
 namespace Juzaweb\Plugin\Lumen;
 
 use Illuminate\Support\Str;
-use Juzaweb\Plugin\Plugin as BaseModule;
+use Juzaweb\Plugin\Support\Plugin as BaseModule;
 
 class Module extends BaseModule
 {

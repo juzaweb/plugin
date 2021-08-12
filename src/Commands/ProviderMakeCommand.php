@@ -3,7 +3,7 @@
 namespace Juzaweb\Plugin\Commands;
 
 use Illuminate\Support\Str;
-use Juzaweb\Plugin\Plugin;
+use Juzaweb\Plugin\Support\Plugin;
 use Juzaweb\Plugin\Support\Config\GenerateConfigReader;
 use Juzaweb\Plugin\Support\Stub;
 use Juzaweb\Plugin\Traits\ModuleCommandTrait;

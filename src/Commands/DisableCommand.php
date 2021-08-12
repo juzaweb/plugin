@@ -3,7 +3,7 @@
 namespace Juzaweb\Plugin\Commands;
 
 use Illuminate\Console\Command;
-use Juzaweb\Plugin\Plugin;
+use Juzaweb\Plugin\Support\Plugin;
 use Symfony\Component\Console\Input\InputArgument;
 
 class DisableCommand extends Command

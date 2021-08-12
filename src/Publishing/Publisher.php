@@ -5,7 +5,7 @@ namespace Juzaweb\Plugin\Publishing;
 use Illuminate\Console\Command;
 use Juzaweb\Plugin\Contracts\PublisherInterface;
 use Juzaweb\Plugin\Contracts\RepositoryInterface;
-use Juzaweb\Plugin\Plugin;
+use Juzaweb\Plugin\Support\Plugin;
 
 abstract class Publisher implements PublisherInterface
 {
@@ -87,7 +87,7 @@ abstract class Publisher implements PublisherInterface
     /**
      * Get plugin instance.
      *
-     * @return \Juzaweb\Plugin\Plugin
+     * @return \Juzaweb\Plugin\Support\Plugin
      */
     public function getModule()
     {

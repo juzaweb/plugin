@@ -9,7 +9,7 @@ use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Filesystem\Filesystem;
 use Juzaweb\Plugin\Contracts\ActivatorInterface;
 use Juzaweb\Plugin\Exceptions\ModuleNotFoundException;
-use Juzaweb\Plugin\Plugin;
+use Juzaweb\Plugin\Support\Plugin;
 
 class FileActivator implements ActivatorInterface
 {

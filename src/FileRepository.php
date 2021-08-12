@@ -23,7 +23,7 @@ abstract class FileRepository implements RepositoryInterface, Countable
     /**
      * Application instance.
      *
-     * @var \Illuminate\Contracts\Foundation\Application|\Laravel\Lumen\Application
+     * @var \Illuminate\Contracts\Foundation\Application
      */
     protected $app;
 
@@ -129,7 +129,7 @@ abstract class FileRepository implements RepositoryInterface, Countable
      * @param Container $app
      * @param string $args
      * @param string $path
-     * @return \Juzaweb\Plugin\Plugin
+     * @return \Juzaweb\Plugin\Support\Plugin
      */
     abstract protected function createModule(...$args);
 

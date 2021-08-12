@@ -2,7 +2,7 @@
 
 namespace Juzaweb\Plugin\Contracts;
 
-use Juzaweb\Plugin\Plugin;
+use Juzaweb\Plugin\Support\Plugin;
 
 interface ActivatorInterface
 {

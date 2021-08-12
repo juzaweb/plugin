@@ -37,7 +37,7 @@ class UpdateCommand extends Command
             return;
         }
 
-        /** @var \Juzaweb\Plugin\Plugin $module */
+        /** @var \Juzaweb\Plugin\Support\Plugin $module */
         foreach ($this->laravel['modules']->getOrdered() as $module) {
             $this->updateModule($module->getName());
         }
