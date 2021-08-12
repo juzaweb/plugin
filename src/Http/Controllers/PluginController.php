@@ -14,8 +14,8 @@ class PluginController extends BackendController
     
     public function index()
     {
-        return view('juzaweb::backend.module.index', [
-            'title' => trans('juzaweb::app.modules'),
+        return view('jw_plugin::plugin.index', [
+            'title' => trans('juzaweb::app.plugins'),
         ]);
     }
     
@@ -82,7 +82,7 @@ class PluginController extends BackendController
         
         return $this->success([
             'message' => trans('juzaweb::app.successfully'),
-            'redirect' => route('admin.module')
+            'redirect' => route('admin.plugin')
         ]);
     }
 }

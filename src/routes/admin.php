@@ -13,9 +13,9 @@
  */
 
 Route::group(['prefix' => 'plugins'], function () {
-    Route::get('/', 'ModuleController@index')->name('admin.module');
+    Route::get('/', 'PluginController@index')->name('admin.plugin');
 
-    Route::get('/get-data', 'ModuleController@getDataTable')->name('admin.module.get-data');
+    Route::get('/get-data', 'PluginController@getDataTable')->name('admin.plugin.get-data');
 
-    Route::post('/bulk-actions', 'ModuleController@bulkActions')->name('admin.module.bulk-actions');
+    Route::post('/bulk-actions', 'PluginController@bulkActions')->name('admin.plugin.bulk-actions');
 });

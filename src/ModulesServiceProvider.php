@@ -29,6 +29,12 @@ abstract class ModulesServiceProvider extends ServiceProvider
      */
     protected function registerModules()
     {
+        $this->loadViewsFrom(__DIR__ . '/views', 'jw_plugin');
+
+        $this->publishes([
+            __DIR__ . '/views' => resource_path('vendor/juzaweb/plugin/views'),
+        ], 'jw_plugin_views');
+
         $this->app->register(BootstrapServiceProvider::class);
     }
 
@@ -38,8 +44,8 @@ abstract class ModulesServiceProvider extends ServiceProvider
     protected function registerNamespaces()
     {
         $configPath = __DIR__ . '/config/plugin.php';
-
         $this->mergeConfigFrom($configPath, 'plugin');
+
         $this->publishes([
             $configPath => config_path('plugin.php'),
         ], 'jw_plugin');
