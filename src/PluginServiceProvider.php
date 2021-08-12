@@ -14,7 +14,7 @@ class PluginServiceProvider extends ModulesServiceProvider
      */
     public function boot()
     {
-        HookAction::loadActionForm(__DIR__ . '/actions');
+        HookAction::loadActionForm(__DIR__ . '/../actions');
         $this->registerModules();
     }
 

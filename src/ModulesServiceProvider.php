@@ -6,6 +6,7 @@ use Illuminate\Support\ServiceProvider;
 use Juzaweb\Plugin\Providers\BootstrapServiceProvider;
 use Juzaweb\Plugin\Providers\ConsoleServiceProvider;
 use Juzaweb\Plugin\Providers\ContractsServiceProvider;
+use Juzaweb\Plugin\Providers\RouteServiceProvider;
 
 abstract class ModulesServiceProvider extends ServiceProvider
 {
@@ -39,9 +40,9 @@ abstract class ModulesServiceProvider extends ServiceProvider
         $configPath = __DIR__ . '/config/plugin.php';
 
         $this->mergeConfigFrom($configPath, 'plugin');
-        /*$this->publishes([
+        $this->publishes([
             $configPath => config_path('plugin.php'),
-        ], 'config');*/
+        ], 'jw_plugin');
     }
 
     /**
@@ -66,5 +67,6 @@ abstract class ModulesServiceProvider extends ServiceProvider
     {
         $this->app->register(ConsoleServiceProvider::class);
         $this->app->register(ContractsServiceProvider::class);
+        $this->app->register(RouteServiceProvider::class);
     }
 }
