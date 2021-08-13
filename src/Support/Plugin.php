@@ -473,6 +473,11 @@ abstract class Plugin
             ucwords(str_replace('/', ' ', $this->getName()));
     }
 
+    public function getPluginPath($plugin)
+    {
+        return $this->path . '/' . $plugin;
+    }
+
     private function runMigrate()
     {
         Artisan::call('migrate', ['--force'=> true]);

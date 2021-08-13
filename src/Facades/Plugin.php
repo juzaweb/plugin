@@ -6,9 +6,11 @@ use Illuminate\Support\Facades\Facade;
 
 /**
  * @method static Plugin[] all()
- * @method static delete($plugin)
- * @method static enable($plugin)
- * @method static disable($plugin)
+ * @method static delete(string $plugin)
+ * @method static enable(string $plugin)
+ * @method static disable(string $plugin)
+ * @method static getPath()
+ * @method static getPluginPath(string $plugin)
  * @method get(string $key, $default = null)
  * @method getDisplayName()
  * @method bool isEnabled()
