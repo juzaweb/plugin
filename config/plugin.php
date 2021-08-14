@@ -49,26 +49,24 @@ return [
         'enabled' => true,
         'files' => [
             'actions/postype' => 'actions/action.php',
-            'routes/web' => 'src/routes/web.php',
+            'routes/admin' => 'src/routes/admin.php',
             'routes/api' => 'src/routes/api.php',
             'views/index' => 'src/resources/views/index.blade.php',
             'composer' => 'composer.json',
-            'assets/js/app' => 'src/resources/assets/js/app.js',
-            'assets/sass/app' => 'src/resources/assets/sass/app.scss',
             'webpack' => 'webpack.mix.js',
             'package' => 'package.json',
         ],
         'replacements' => [
-            'routes/web' => ['LOWER_NAME', 'STUDLY_NAME'],
+            'routes/admin' => ['LOWER_NAME', 'STUDLY_NAME'],
             'routes/api' => ['LOWER_NAME'],
             'webpack' => ['LOWER_NAME'],
             'json' => ['LOWER_NAME', 'STUDLY_NAME', 'MODULE_NAMESPACE', 'PROVIDER_NAMESPACE'],
             'views/index' => ['LOWER_NAME'],
             'views/master' => ['LOWER_NAME', 'STUDLY_NAME'],
-            /*'scaffold/config' => ['STUDLY_NAME'],*/
             'composer' => [
                 'LOWER_NAME',
                 'STUDLY_NAME',
+                'SNAKE_NAME',
                 'VENDOR',
                 'AUTHOR_NAME',
                 'AUTHOR_EMAIL',
@@ -131,7 +129,9 @@ return [
             'filter' => ['path' => 'src/Http/Middleware', 'generate' => true],
             'request' => ['path' => 'src/Http/Requests', 'generate' => true],
             'provider' => ['path' => 'src/Providers', 'generate' => true],
-            'assets' => ['path' => 'src/resources/assets', 'generate' => true],
+            'assets' => ['path' => 'assets', 'generate' => true],
+            'assets_js' => ['path' => 'assets/js', 'generate' => true],
+            'assets_css' => ['path' => 'assets/css', 'generate' => true],
             'lang' => ['path' => 'src/resources/lang', 'generate' => true],
             'views' => ['path' => 'src/resources/views', 'generate' => true],
             'test' => ['path' => 'tests/Unit', 'generate' => true],
@@ -174,7 +174,7 @@ return [
     */
     'cache' => [
         'enabled' => false,
-        'key' => 'tadcms-plugins',
+        'key' => 'juzaweb-plugins',
         'lifetime' => 60,
     ],
     /*
@@ -186,6 +186,7 @@ return [
     */
     'register' => [
         'translations' => true,
+
         /**
          * load files on boot or register method
          *

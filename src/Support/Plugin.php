@@ -9,6 +9,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Illuminate\Support\Traits\Macroable;
 use Illuminate\Translation\Translator;
+use Illuminate\View\ViewFinderInterface;
 use Juzaweb\Plugin\Contracts\ActivatorInterface;
 use Illuminate\Support\Facades\Artisan;
 use Juzaweb\Plugin\Json;
@@ -20,7 +21,7 @@ abstract class Plugin
     /**
      * The laravel|lumen application instance.
      *
-     * @var \Illuminate\Contracts\Foundation\Application|\Laravel\Lumen\Application
+     * @var \Illuminate\Contracts\Foundation\Application
      */
     protected $app;
 
@@ -54,6 +55,12 @@ abstract class Plugin
      * @var Translator
      */
     private $translator;
+
+    /**
+     * @var ViewFinderInterface $finder
+     */
+    private $finder;
+
     /**
      * @var ActivatorInterface
      */
@@ -72,6 +79,7 @@ abstract class Plugin
         $this->cache = $app['cache'];
         $this->files = $app['files'];
         $this->translator = $app['translator'];
+        $this->finder = $app['view.finder'];
         $this->activator = $app[ActivatorInterface::class];
         $this->app = $app;
     }
@@ -188,6 +196,7 @@ abstract class Plugin
      */
     public function boot(): void
     {
+        $this->registerViews();
         if (config('plugin.register.translations', true) === true) {
             $this->registerTranslation();
         }
@@ -199,6 +208,13 @@ abstract class Plugin
         $this->fireEvent('boot');
     }
 
+    public function registerViews()
+    {
+        $snakeName = $this->getSnakeName();
+        $sourcePath = $this->getPath() .'/resources/views';
+        $this->finder->addNamespace($snakeName, $sourcePath);
+    }
+
     /**
      * Register plugin's translation.
      *
@@ -206,12 +222,11 @@ abstract class Plugin
      */
     protected function registerTranslation(): void
     {
-        $lowerName = $this->getLowerName();
-
+        $snakeName = $this->getSnakeName();
         $langPath = $this->getPath() . '/resources/lang';
 
         if (is_dir($langPath)) {
-            $this->loadTranslationsFrom($langPath, $lowerName);
+            $this->loadTranslationsFrom($langPath, $snakeName);
         }
     }
 
@@ -458,10 +473,10 @@ abstract class Plugin
         return [];
     }
 
-    public function getExtraMymo($key, $default = null)
+    public function getExtraJuzaweb($key, $default = null)
     {
         $extra = $this->get('extra', []);
-        if ($laravel = Arr::get($extra, 'tadcms', [])) {
+        if ($laravel = Arr::get($extra, 'juzaweb', [])) {
             return Arr::get($laravel, $key, $default);
         }
 
@@ -470,8 +485,8 @@ abstract class Plugin
 
     public function getDisplayName()
     {
-        return $this->getExtraMymo('name') ??
-            ucwords(str_replace('/', ' ', $this->getName()));
+        $default = ucwords(str_replace('/', ' ', $this->getName()));
+        return $this->getExtraJuzaweb('name') ?? $default;
     }
 
     public function getPluginPath($plugin)

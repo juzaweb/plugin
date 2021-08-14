@@ -3,9 +3,13 @@
 namespace Juzaweb\Plugin;
 
 use Juzaweb\Core\Facades\HookAction;
+use Juzaweb\Plugin\Contracts\ActivatorInterface;
+use Juzaweb\Plugin\Contracts\RepositoryInterface;
 use Juzaweb\Plugin\Exceptions\InvalidActivatorClass;
+use Juzaweb\Plugin\Laravel\LaravelFileRepository;
 use Juzaweb\Plugin\Support\Stub;
 use Composer\Autoload\ClassLoader;
+use Illuminate\Support\Str;
 
 class PluginServiceProvider extends ModulesServiceProvider
 {
@@ -39,11 +43,6 @@ class PluginServiceProvider extends ModulesServiceProvider
     public function setupStubPath()
     {
         Stub::setBasePath(__DIR__ . '/../stubs');
-
-        /*$this->app->booted(function ($app) {
-            $moduleRepository = $app[RepositoryInterface::class];
-            Stub::setBasePath($moduleRepository->config('stubs.path'));
-        });*/
     }
 
     /**
@@ -51,14 +50,14 @@ class PluginServiceProvider extends ModulesServiceProvider
      */
     protected function registerServices()
     {
-        $this->app->singleton(Contracts\RepositoryInterface::class, function ($app) {
-            $path = $app['config']->get('plugin.paths.modules');
-
-            return new Laravel\LaravelFileRepository($app, $path);
+        $this->app->singleton(RepositoryInterface::class, function ($app) {
+            $path = config('plugin.paths.modules');
+            return new LaravelFileRepository($app, $path);
         });
-        $this->app->singleton(Contracts\ActivatorInterface::class, function ($app) {
-            $activator = $app['config']->get('plugin.activator');
-            $class = $app['config']->get('plugin.activators.' . $activator)['class'];
+
+        $this->app->singleton(ActivatorInterface::class, function ($app) {
+            $activator = config('plugin.activator');
+            $class = config('plugin.activators.' . $activator)['class'];
 
             if ($class === null) {
                 throw InvalidActivatorClass::missingConfig();
@@ -66,7 +65,8 @@ class PluginServiceProvider extends ModulesServiceProvider
 
             return new $class($app);
         });
-        $this->app->alias(Contracts\RepositoryInterface::class, 'modules');
+
+        $this->app->alias(RepositoryInterface::class, 'modules');
     }
 
     protected function pluginAutoload()
@@ -80,19 +80,47 @@ class PluginServiceProvider extends ModulesServiceProvider
         if (empty($plugins)) {
             return;
         }
-        
-        $pluginsFolder = $this->app['config']->get('plugin.paths.modules');
+
+        $pluginsFolder = config('plugin.paths.modules');
         $loader = new ClassLoader();
+
         foreach ($plugins as $pluginInfo) {
             foreach ($pluginInfo as $key => $item) {
                 $path = $pluginsFolder . '/' . $item['path'];
                 $namespace = $item['namespace'] ?? '';
+
                 if (is_dir($path) && $namespace) {
                     $loader->setPsr4($namespace, [$path]);
+                    $this->registerPlublish($path, $namespace);
                 }
             }
         }
 
         $loader->register(true);
+    }
+
+    protected function registerPlublish($path, $namespace)
+    {
+        $namespace = str_replace('\\', '/', $namespace);
+        $namespace = Str::lower(trim($namespace, '/'));
+
+        $snakeName = Str::snake(preg_replace('/[^0-9a-z]/', '_', $namespace));
+
+        $viewFolder = $path . '/resources/views';
+        $langFolder = $path . '/resources/lang';
+
+        if (is_dir($viewFolder)) {
+            $viewPublic = resource_path('views/plugins/' . $namespace);
+            $this->publishes([
+                $viewFolder => $viewPublic,
+            ], $snakeName);
+        }
+
+        if (is_dir($langFolder)) {
+            $langPublic = resource_path('lang/plugins/' . $namespace);
+            $this->publishes([
+                $langFolder => $langPublic,
+            ], $snakeName);
+        }
     }
 }

@@ -8,5 +8,10 @@ use Illuminate\Routing\Controller;
 
 class $CLASS$ extends Controller
 {
+    public function index()
+    {
+        //
 
+        return view('$SNAKE_NAME$::index');
+    }
 }

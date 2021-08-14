@@ -146,6 +146,11 @@ class ModuleGenerator extends Generator
         return Str::studly($name);
     }
 
+    public function getSnakeName(): string
+    {
+        return Str::snake(preg_replace('/[^0-9a-z]/', '_', $this->name));
+    }
+
     /**
      * Get the laravel config instance.
      *
@@ -398,12 +403,12 @@ class ModuleGenerator extends Generator
             ]);*/
         }
 
-        /*if (GenerateConfigReader::read('controller')->generate() === true) {
+        if (GenerateConfigReader::read('controller')->generate() === true) {
             $this->console->call('plugin:make-controller', [
                 'controller' => $this->getStudlyName() . 'Controller',
                 'module' => $this->getName(),
             ]);
-        }*/
+        }
     }
 
     /**
@@ -523,6 +528,16 @@ class ModuleGenerator extends Generator
     protected function getStudlyNameReplacement()
     {
         return $this->getName();
+    }
+
+    /**
+     * Get the plugin name in snake case.
+     *
+     * @return string
+     */
+    protected function getSnakeNameReplacement()
+    {
+        return strtolower($this->getSnakeName());
     }
 
     /**
