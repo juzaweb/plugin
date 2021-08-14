@@ -42,7 +42,7 @@ abstract class ModulesServiceProvider extends ServiceProvider
      */
     protected function registerNamespaces()
     {
-        $configPath = __DIR__ . '/config/plugin.php';
+        $configPath = __DIR__ . '/../config/plugin.php';
         $this->mergeConfigFrom($configPath, 'plugin');
 
         $this->publishes([

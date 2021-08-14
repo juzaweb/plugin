@@ -389,21 +389,21 @@ class ModuleGenerator extends Generator
 
         if (GenerateConfigReader::read('provider')->generate() === true) {
             $this->console->call('plugin:make-provider', [
-                'name' => 'MainServiceProvider',
+                'name' => $this->getStudlyName() . 'ServiceProvider',
                 'module' => $this->getName(),
                 '--master' => true,
             ]);
-            $this->console->call('plugin:route-provider', [
+            /*$this->console->call('plugin:route-provider', [
                 'module' => $this->getName(),
-            ]);
+            ]);*/
         }
 
-        if (GenerateConfigReader::read('controller')->generate() === true) {
+        /*if (GenerateConfigReader::read('controller')->generate() === true) {
             $this->console->call('plugin:make-controller', [
                 'controller' => $this->getStudlyName() . 'Controller',
                 'module' => $this->getName(),
             ]);
-        }
+        }*/
     }
 
     /**
@@ -462,6 +462,10 @@ class ModuleGenerator extends Generator
                 $replaces[$key] = null;
             }
         }
+
+        /*if ($stub === 'composer') {
+            dd($replaces);
+        }*/
 
         return $replaces;
     }
@@ -528,7 +532,9 @@ class ModuleGenerator extends Generator
      */
     protected function getVendorReplacement()
     {
-        return $this->module->config('composer.vendor');
+        $name = explode('/', $this->getName());
+        $name = $name[0];
+        return $name;
     }
 
     /**
@@ -545,13 +551,27 @@ class ModuleGenerator extends Generator
     }
 
     /**
+     * Get replacement for $MODULE_NAME$.
+     *
+     * @return string
+     */
+    protected function getModuleNameReplacement()
+    {
+        $name = explode('\\', $this->getModuleNamespaceReplacement());
+        $name = $name[count($name) - 1];
+        return $name;
+    }
+
+    /**
      * Get replacement for $AUTHOR_NAME$.
      *
      * @return string
      */
     protected function getAuthorNameReplacement()
     {
-        return $this->module->config('composer.author.name');
+        $name = explode('/', $this->getName());
+        $name = ucfirst($name[0]);
+        return $name;
     }
 
     /**
@@ -561,7 +581,7 @@ class ModuleGenerator extends Generator
      */
     protected function getAuthorEmailReplacement()
     {
-        return $this->module->config('composer.author.email');
+        return 'example@gmail.com';
     }
 
     protected function getProviderNamespaceReplacement(): string

@@ -28,7 +28,7 @@ class PluginServiceProvider extends ModulesServiceProvider
         $this->setupStubPath();
         $this->registerProviders();
 
-        if (config('juzaweb.plugin.autoload')) {
+        if (config('plugin.autoload')) {
             $this->pluginAutoload();
         }
     }

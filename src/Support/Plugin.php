@@ -11,6 +11,7 @@ use Illuminate\Support\Traits\Macroable;
 use Illuminate\Translation\Translator;
 use Juzaweb\Plugin\Contracts\ActivatorInterface;
 use Illuminate\Support\Facades\Artisan;
+use Juzaweb\Plugin\Json;
 
 abstract class Plugin
 {

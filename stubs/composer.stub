@@ -4,11 +4,8 @@
     "extra": {
         "laravel": {
             "providers": [
-                "$MODULE_NAMESPACE$\\$PROVIDER_NAMESPACE$\\MainServiceProvider"
-            ],
-            "aliases": {
-
-            }
+                "$MODULE_NAMESPACE$\\$PROVIDER_NAMESPACE$\\$MODULE_NAME$ServiceProvider"
+            ]
         }
     },
     "autoload": {
