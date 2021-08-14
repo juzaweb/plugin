@@ -29,10 +29,6 @@ use Juzaweb\Plugin\Commands\ModuleMakeCommand;
 use Juzaweb\Plugin\Commands\NotificationMakeCommand;
 use Juzaweb\Plugin\Commands\PolicyMakeCommand;
 use Juzaweb\Plugin\Commands\ProviderMakeCommand;
-use Juzaweb\Plugin\Commands\PublishCommand;
-use Juzaweb\Plugin\Commands\PublishConfigurationCommand;
-use Juzaweb\Plugin\Commands\PublishMigrationCommand;
-use Juzaweb\Plugin\Commands\PublishTranslationCommand;
 use Juzaweb\Plugin\Commands\RequestMakeCommand;
 use Juzaweb\Plugin\Commands\ResourceMakeCommand;
 use Juzaweb\Plugin\Commands\RouteProviderMakeCommand;
@@ -81,10 +77,6 @@ class ConsoleServiceProvider extends ServiceProvider
         MigrateStatusCommand::class,
         MigrationMakeCommand::class,
         ModelMakeCommand::class,
-        //PublishCommand::class,
-        //PublishConfigurationCommand::class,
-        //PublishMigrationCommand::class,
-        //PublishTranslationCommand::class,
         SeedCommand::class,
         SeedMakeCommand::class,
         //SetupCommand::class,

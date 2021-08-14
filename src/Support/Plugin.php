@@ -196,38 +196,11 @@ abstract class Plugin
      */
     public function boot(): void
     {
-        $this->registerViews();
-        if (config('plugin.register.translations', true) === true) {
-            $this->registerTranslation();
-        }
-
         if ($this->isLoadFilesOnBoot()) {
             $this->registerFiles();
         }
 
         $this->fireEvent('boot');
-    }
-
-    public function registerViews()
-    {
-        $snakeName = $this->getSnakeName();
-        $sourcePath = $this->getPath() .'/resources/views';
-        $this->finder->addNamespace($snakeName, $sourcePath);
-    }
-
-    /**
-     * Register plugin's translation.
-     *
-     * @return void
-     */
-    protected function registerTranslation(): void
-    {
-        $snakeName = $this->getSnakeName();
-        $langPath = $this->getPath() . '/resources/lang';
-
-        if (is_dir($langPath)) {
-            $this->loadTranslationsFrom($langPath, $snakeName);
-        }
     }
 
     /**

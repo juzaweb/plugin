@@ -3,6 +3,7 @@
 namespace Juzaweb\Plugin;
 
 use Illuminate\Support\ServiceProvider;
+use Juzaweb\Plugin\Providers\AutoloadServiceProvider;
 use Juzaweb\Plugin\Providers\BootstrapServiceProvider;
 use Juzaweb\Plugin\Providers\ConsoleServiceProvider;
 use Juzaweb\Plugin\Providers\ContractsServiceProvider;
@@ -72,5 +73,6 @@ abstract class ModulesServiceProvider extends ServiceProvider
     {
         $this->app->register(ConsoleServiceProvider::class);
         $this->app->register(ContractsServiceProvider::class);
+        $this->app->register(AutoloadServiceProvider::class);
     }
 }
