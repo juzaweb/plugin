@@ -67,6 +67,7 @@ class AutoloadServiceProvider extends ServiceProvider
     public function registerViews($path, $namespace, $snakeName)
     {
         $sourcePath = $path .'/resources/views';
+        $assetsPath = $path .'/../assets';
 
         if (is_dir($sourcePath)) {
             $this->loadViewsFrom($sourcePath, $snakeName);
@@ -74,7 +75,14 @@ class AutoloadServiceProvider extends ServiceProvider
             $viewPublic = resource_path('views/plugins/' . $namespace);
             $this->publishes([
                 $sourcePath => $viewPublic,
-            ], $snakeName);
+            ], $snakeName . '_views');
+        }
+
+        if (is_dir($assetsPath)) {
+            $assetsPublic = public_path('plugins/' . $namespace . '/assets');
+            $this->publishes([
+                $assetsPath => $assetsPublic,
+            ], $snakeName . '_assets');
         }
     }
 
@@ -88,14 +96,14 @@ class AutoloadServiceProvider extends ServiceProvider
 
             $this->publishes([
                 $langPath => $langPublic,
-            ], $snakeName);
+            ], $snakeName . '_lang');
         }
     }
 
     protected function registerDatabase($path)
     {
         $this->loadMigrationsFrom($path . '/database/migrations');
-        if (! app()->environment('production') && $this->app->runningInConsole()) {
+        if (!app()->environment('production') && $this->app->runningInConsole()) {
             app(Factory::class)->load($path . '/database/factories');
         }
     }

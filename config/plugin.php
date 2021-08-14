@@ -48,7 +48,7 @@ return [
     'stubs' => [
         'enabled' => true,
         'files' => [
-            'actions/postype' => 'actions/action.php',
+            'actions/action' => 'actions/action.php',
             'routes/admin' => 'src/routes/admin.php',
             'routes/api' => 'src/routes/api.php',
             'views/index' => 'src/resources/views/index.blade.php',
