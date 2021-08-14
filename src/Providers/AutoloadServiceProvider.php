@@ -61,12 +61,12 @@ class AutoloadServiceProvider extends ServiceProvider
 
         $this->registerDatabase($path);
         $this->registerViews($path, $namespace, $snakeName);
-        $this->registerTranslation($path, $namespace, $snakeName);
     }
 
     public function registerViews($path, $namespace, $snakeName)
     {
         $sourcePath = $path .'/resources/views';
+        $langPath = $path . '/resources/lang';
         $assetsPath = $path .'/../assets';
 
         if (is_dir($sourcePath)) {
@@ -84,11 +84,6 @@ class AutoloadServiceProvider extends ServiceProvider
                 $assetsPath => $assetsPublic,
             ], $snakeName . '_assets');
         }
-    }
-
-    protected function registerTranslation($path, $namespace, $snakeName)
-    {
-        $langPath = $path . '/resources/lang';
 
         if (is_dir($langPath)) {
             $this->loadTranslationsFrom($langPath, $snakeName);
