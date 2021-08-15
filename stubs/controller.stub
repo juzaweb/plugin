@@ -2,11 +2,9 @@
 
 namespace $CLASS_NAMESPACE$;
 
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
-use Illuminate\Routing\Controller;
+use Juzaweb\Core\Http\Controllers\BackendController;
 
-class $CLASS$ extends Controller
+class $CLASS$ extends BackendController
 {
     public function index()
     {

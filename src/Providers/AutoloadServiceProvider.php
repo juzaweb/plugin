@@ -18,17 +18,23 @@ use Composer\Autoload\ClassLoader;
 use Illuminate\Support\Str;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Database\Eloquent\Factory;
+use Juzaweb\Core\Facades\HookAction;
 
 class AutoloadServiceProvider extends ServiceProvider
 {
+    public function boot()
+    {
+        $this->bootPlugins();
+    }
+
     public function register()
     {
         if (config('plugin.autoload')) {
-            $this->pluginAutoload();
+            $this->autoloadPlugins();
         }
     }
 
-    protected function pluginAutoload()
+    protected function autoloadPlugins()
     {
         $plugins = $this->getActivePlugins();
         if (empty($plugins)) {
@@ -117,5 +123,33 @@ class AutoloadServiceProvider extends ServiceProvider
     protected function getPluginsPath()
     {
         return config('plugin.paths.modules');
+    }
+
+    protected function bootPlugins()
+    {
+        $plugins = $this->getActivePlugins();
+        if (empty($plugins)) {
+            return;
+        }
+
+        $pluginsFolder = $this->getPluginsPath();
+        foreach ($plugins as $pluginInfo) {
+            foreach ($pluginInfo as $key => $item) {
+                $path = $pluginsFolder . '/' . $item['path'];
+                $namespace = $item['namespace'] ?? '';
+
+                if (is_dir($path) && $namespace) {
+                    $this->bootActions($path);
+                }
+            }
+        }
+    }
+
+    protected function bootActions($path)
+    {
+        $actionPath = $path .'/../actions';
+        if (is_dir($actionPath)) {
+            HookAction::loadActionForm($actionPath);
+        }
     }
 }
