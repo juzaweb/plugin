@@ -129,7 +129,7 @@ return [
             'filter' => ['path' => 'src/Http/Middleware', 'generate' => true],
             'request' => ['path' => 'src/Http/Requests', 'generate' => true],
             'provider' => ['path' => 'src/Providers', 'generate' => true],
-            'assets' => ['path' => 'resources/assets', 'generate' => true],
+            'assets' => ['path' => 'src/resources/assets', 'generate' => true],
             'assets_js' => ['path' => 'assets/js', 'generate' => true],
             'assets_css' => ['path' => 'assets/css', 'generate' => true],
             'lang' => ['path' => 'src/resources/lang', 'generate' => true],
