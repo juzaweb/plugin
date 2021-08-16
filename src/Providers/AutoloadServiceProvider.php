@@ -66,39 +66,6 @@ class AutoloadServiceProvider extends ServiceProvider
         $snakeName = Str::snake(preg_replace('/[^0-9a-z]/', '_', $namespace));
 
         $this->registerDatabase($path);
-        $this->registerViews($path, $namespace, $snakeName);
-    }
-
-    public function registerViews($path, $namespace, $snakeName)
-    {
-        $sourcePath = $path .'/resources/views';
-        $langPath = $path . '/resources/lang';
-        $assetsPath = $path .'/../assets';
-
-        if (is_dir($sourcePath)) {
-            $this->loadViewsFrom($sourcePath, $snakeName);
-
-            $viewPublic = resource_path('views/plugins/' . $namespace);
-            $this->publishes([
-                $sourcePath => $viewPublic,
-            ], $snakeName . '_views');
-        }
-
-        if (is_dir($assetsPath)) {
-            $assetsPublic = public_path('plugins/' . $namespace . '/assets');
-            $this->publishes([
-                $assetsPath => $assetsPublic,
-            ], $snakeName . '_assets');
-        }
-
-        if (is_dir($langPath)) {
-            $this->loadTranslationsFrom($langPath, $snakeName);
-            $langPublic = resource_path('lang/plugins/' . $namespace);
-
-            $this->publishes([
-                $langPath => $langPublic,
-            ], $snakeName . '_lang');
-        }
     }
 
     protected function registerDatabase($path)
@@ -137,19 +104,53 @@ class AutoloadServiceProvider extends ServiceProvider
             foreach ($pluginInfo as $key => $item) {
                 $path = $pluginsFolder . '/' . $item['path'];
                 $namespace = $item['namespace'] ?? '';
+                $snakeName = Str::snake(preg_replace('/[^0-9a-z]/', '_', $namespace));
 
                 if (is_dir($path) && $namespace) {
-                    $this->bootActions($path);
+                    $this->bootActions($path, $namespace, $snakeName);
                 }
             }
         }
     }
 
-    protected function bootActions($path)
+    protected function bootActions($path, $namespace, $snakeName)
     {
         $actionPath = $path .'/../actions';
         if (is_dir($actionPath)) {
+            $this->bootViews($path, $namespace, $snakeName);
             HookAction::loadActionForm($actionPath);
+        }
+    }
+
+    public function bootViews($path, $namespace, $snakeName)
+    {
+        $sourcePath = $path .'/resources/views';
+        $langPath = $path . '/resources/lang';
+        $assetsPath = $path .'/resources/assets';
+
+        if (is_dir($sourcePath)) {
+            $this->loadViewsFrom($sourcePath, $snakeName);
+
+            $viewPublic = resource_path('views/vendor/' . $snakeName);
+            $this->publishes([
+                $sourcePath => $viewPublic,
+            ], $snakeName . '_views');
+        }
+
+        if (is_dir($langPath)) {
+            $this->loadTranslationsFrom($langPath, $snakeName);
+            $langPublic = resource_path('lang/vendor/' . $snakeName);
+
+            $this->publishes([
+                $langPath => $langPublic,
+            ], $snakeName . '_lang');
+        }
+
+        if (is_dir($assetsPath)) {
+            $assetsPublic = public_path('plugins/' . $namespace . '/assets');
+            $this->publishes([
+                $assetsPath => $assetsPublic,
+            ], $snakeName . '_assets');
         }
     }
 }
