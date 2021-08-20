@@ -9,7 +9,6 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Illuminate\Support\Traits\Macroable;
 use Illuminate\Translation\Translator;
-use Illuminate\View\ViewFinderInterface;
 use Juzaweb\Plugin\Contracts\ActivatorInterface;
 use Illuminate\Support\Facades\Artisan;
 use Juzaweb\Plugin\Json;
@@ -57,14 +56,14 @@ abstract class Plugin
     private $translator;
 
     /**
-     * @var ViewFinderInterface $finder
-     */
-    private $finder;
-
-    /**
      * @var ActivatorInterface
      */
     private $activator;
+
+    /**
+     * @var \Illuminate\Routing\Router $router
+     */
+    private $router;
 
     /**
      * The constructor.
@@ -78,8 +77,8 @@ abstract class Plugin
         $this->path = $path;
         $this->cache = $app['cache'];
         $this->files = $app['files'];
+        $this->router = $app['router'];
         $this->translator = $app['translator'];
-        $this->finder = $app['view.finder'];
         $this->activator = $app[ActivatorInterface::class];
         $this->app = $app;
     }
@@ -124,7 +123,7 @@ abstract class Plugin
      */
     public function getSnakeName(): string
     {
-        return Str::snake(preg_replace('/[^0-9a-z]/', '_', $this->name));
+        return namespace_snakename($this->name);
     }
 
     /**
@@ -260,6 +259,8 @@ abstract class Plugin
             $this->registerFiles();
         }
 
+        $this->registerRoute();
+
         $this->fireEvent('register');
     }
 
@@ -288,6 +289,21 @@ abstract class Plugin
      * @return string
      */
     abstract public function getCachedServicesPath(): string;
+
+    protected function registerRoute()
+    {
+        $namespace = $this->getNamespace() . 'Http\Controllers';
+
+        $this->router->middleware('admin')
+            ->namespace($namespace)
+            ->prefix(config('juzaweb.admin_prefix'))
+            ->group($this->path . '/src/routes/admin.php');
+
+        $this->router->middleware('api')
+            ->namespace($namespace)
+            ->prefix('api')
+            ->group($this->path . '/src/routes/api.php');
+    }
 
     /**
      * Register the files from this plugin.
@@ -465,6 +481,13 @@ abstract class Plugin
     public function getPluginPath($plugin)
     {
         return $this->path . '/' . $plugin;
+    }
+
+    protected function getNamespace()
+    {
+        $namespace = Arr::get($this->get('autoload', []), 'psr-4', null);
+        $namespace = array_keys($namespace)[0];
+        return $namespace;
     }
 
     private function runMigrate()

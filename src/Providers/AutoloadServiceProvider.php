@@ -63,7 +63,7 @@ class AutoloadServiceProvider extends ServiceProvider
     {
         $namespace = str_replace('\\', '/', $namespace);
         $namespace = Str::lower(trim($namespace, '/'));
-        $snakeName = Str::snake(preg_replace('/[^0-9a-z]/', '_', $namespace));
+        $snakeName = Str::snake(preg_replace('/[^0-9a-z]/', ' ', Str::lower($namespace)));
 
         $this->registerDatabase($path);
     }
@@ -104,7 +104,7 @@ class AutoloadServiceProvider extends ServiceProvider
             foreach ($pluginInfo as $key => $item) {
                 $path = $pluginsFolder . '/' . $item['path'];
                 $namespace = $item['namespace'] ?? '';
-                $snakeName = Str::snake(preg_replace('/[^0-9a-z]/', '_', $namespace));
+                $snakeName = Str::snake(preg_replace('/[^0-9a-z]/', ' ', Str::lower($namespace)));
 
                 if (is_dir($path) && $namespace) {
                     $this->bootActions($path, $namespace, $snakeName);

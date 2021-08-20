@@ -15,7 +15,10 @@
         "psr-4": {
           "Juzaweb\\Plugin\\Tests\\": "tests/",
           "Juzaweb\\Plugin\\": "src/"
-        }
+        },
+        "files": [
+          "src/Helpers/helpers.php"
+        ]
     },
     "extra": {
       "laravel": {
