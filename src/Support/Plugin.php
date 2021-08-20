@@ -478,11 +478,6 @@ abstract class Plugin
         return $this->getExtraJuzaweb('name') ?? $default;
     }
 
-    public function getPluginPath($plugin)
-    {
-        return $this->path . '/' . $plugin;
-    }
-
     protected function getNamespace()
     {
         $namespace = Arr::get($this->get('autoload', []), 'psr-4', null);
