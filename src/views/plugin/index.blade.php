@@ -52,8 +52,8 @@
             <thead>
                 <tr>
                     <th data-width="3%" data-field="state" data-checkbox="true"></th>
-                    <th data-field="name" data-formatter="nameFormatter">@lang('juzaweb::app.name')</th>
-                    <th data-field="description" data-width="35%">@lang('juzaweb::app.description')</th>
+                    <th data-field="name" data-width="20%" data-formatter="nameFormatter">@lang('juzaweb::app.name')</th>
+                    <th data-field="description">@lang('juzaweb::app.description')</th>
                     <th data-width="15%" data-field="status" data-formatter="statusFormatter">@lang('juzaweb::app.status')</th>
                 </tr>
             </thead>
