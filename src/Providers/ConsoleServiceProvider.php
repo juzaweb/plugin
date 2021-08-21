@@ -62,7 +62,7 @@ class ConsoleServiceProvider extends ServiceProvider
         //NotificationMakeCommand::class,
         ProviderMakeCommand::class,
         RouteProviderMakeCommand::class,
-        //InstallCommand::class,
+        InstallCommand::class,
         ListCommand::class,
         ModuleDeleteCommand::class,
         ModuleMakeCommand::class,

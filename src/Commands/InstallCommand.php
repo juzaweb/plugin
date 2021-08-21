@@ -43,12 +43,25 @@ class InstallCommand extends Command
             return;
         }
 
-        $this->install(
-            $this->argument('name'),
-            $this->argument('version'),
-            $this->option('type'),
-            $this->option('tree')
-        );
+        $pluginName = $this->argument('name');
+        if (!file_exists($path = plugin_path($pluginName, 'composer.json'))) {
+            $this->error("File 'composer.json' does not exist in your project root.");
+
+            return;
+        }
+
+        $modules = Json::make($path);
+        $dependencies = $modules->get('require', []);
+
+        foreach ($dependencies as $module) {
+            $module = collect($module);
+
+            $this->install(
+                $module->get('name'),
+                $module->get('version'),
+                $module->get('type')
+            );
+        }
     }
 
     /**
