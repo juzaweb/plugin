@@ -70,7 +70,7 @@ class AutoloadServiceProvider extends ServiceProvider
 
     protected function registerDatabase($path)
     {
-        $this->loadMigrationsFrom($path . '/database/migrations');
+        //$this->loadMigrationsFrom($path . '/database/migrations');
         if (!app()->environment('production') && $this->app->runningInConsole()) {
             app(Factory::class)->load($path . '/database/factories');
         }
