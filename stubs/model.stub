@@ -2,7 +2,7 @@
 
 namespace $NAMESPACE$;
 
-use Illuminate\Database\Eloquent\Model;
+use Juzaweb\Core\Models\Model;
 
 class $CLASS$ extends Model
 {
