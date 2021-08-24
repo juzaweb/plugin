@@ -128,6 +128,7 @@ return [
             'controller' => ['path' => 'src/Http/Controllers', 'generate' => true],
             'filter' => ['path' => 'src/Http/Middleware', 'generate' => true],
             'request' => ['path' => 'src/Http/Requests', 'generate' => true],
+            'datatable' => ['path' => 'src/Http/Datatable', 'generate' => true],
             'provider' => ['path' => 'src/Providers', 'generate' => true],
             'assets' => ['path' => 'src/resources/assets', 'generate' => true],
             'assets_js' => ['path' => 'assets/js', 'generate' => true],
