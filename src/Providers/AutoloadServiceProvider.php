@@ -50,7 +50,6 @@ class AutoloadServiceProvider extends ServiceProvider
                 $namespace = $item['namespace'] ?? '';
 
                 if (is_dir($path) && $namespace) {
-                    $loader->setPsr4($namespace, [$path]);
                     $this->registerPlugin($path, $namespace);
                 }
             }
