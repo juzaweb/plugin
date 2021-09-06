@@ -16,7 +16,7 @@ use Illuminate\Filesystem\Filesystem;
 use Illuminate\Foundation\AliasLoader;
 use Illuminate\Foundation\ProviderRepository;
 use Illuminate\Support\Str;
-use Juzaweb\Plugin\Support\Plugin as BaseModule;
+use Juzaweb\Plugin\Abstracts\Plugin as BaseModule;
 
 class Module extends BaseModule
 {

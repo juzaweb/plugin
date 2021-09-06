@@ -1,6 +1,6 @@
 <?php
 
-namespace Juzaweb\Plugin\Support;
+namespace Juzaweb\Plugin\Abstracts;
 
 use Illuminate\Cache\CacheManager;
 use Illuminate\Container\Container;
@@ -8,7 +8,6 @@ use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Illuminate\Support\Traits\Macroable;
-use Illuminate\Translation\Translator;
 use Juzaweb\Plugin\Contracts\ActivatorInterface;
 use Illuminate\Support\Facades\Artisan;
 use Juzaweb\Plugin\Json;
@@ -50,10 +49,6 @@ abstract class Plugin
      * @var Filesystem
      */
     private $files;
-    /**
-     * @var Translator
-     */
-    private $translator;
 
     /**
      * @var ActivatorInterface
@@ -78,7 +73,6 @@ abstract class Plugin
         $this->cache = $app['cache'];
         $this->files = $app['files'];
         $this->router = $app['router'];
-        $this->translator = $app['translator'];
         $this->activator = $app[ActivatorInterface::class];
         $this->app = $app;
     }
@@ -440,18 +434,6 @@ abstract class Plugin
         }
     }
 
-    /**
-     * Register a translation file namespace.
-     *
-     * @param  string  $path
-     * @param  string  $namespace
-     * @return void
-     */
-    private function loadTranslationsFrom(string $path, string $namespace): void
-    {
-        $this->translator->addNamespace($namespace, $path);
-    }
-
     public function getExtraLarevel($key): array
     {
         $extra = $this->get('extra', []);
@@ -474,19 +456,23 @@ abstract class Plugin
 
     public function getDisplayName()
     {
-        $default = ucwords(str_replace('/', ' ', $this->getName()));
-        return $this->getExtraJuzaweb('name') ?? $default;
+        return $this->getExtraJuzaweb('name');
     }
 
-    protected function getNamespace()
+    public function getDomain()
     {
-        $namespace = Arr::get($this->get('autoload', []), 'psr-4', null);
+        return $this->getExtraJuzaweb('domain');
+    }
+
+    public function getNamespace()
+    {
+        $namespace = Arr::get($this->get('autoload', []), 'psr-4');
         $namespace = array_keys($namespace)[0];
         return $namespace;
     }
 
     private function runMigrate()
     {
-        Artisan::call('plugin:migrate', ['--force'=> true]);
+        Artisan::call('plugin:migrate');
     }
 }

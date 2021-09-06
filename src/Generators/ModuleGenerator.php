@@ -7,7 +7,7 @@ use Illuminate\Console\Command as Console;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Str;
 use Juzaweb\Plugin\Contracts\ActivatorInterface;
-use Juzaweb\Plugin\FileRepository;
+use Juzaweb\Plugin\Abstracts\FileRepository;
 use Juzaweb\Plugin\Support\Config\GenerateConfigReader;
 use Juzaweb\Plugin\Support\Stub;
 
@@ -51,7 +51,7 @@ class ModuleGenerator extends Generator
     /**
      * The plugin instance.
      *
-     * @var \Juzaweb\Plugin\Support\Plugin
+     * @var \Juzaweb\Plugin\Abstracts\Plugin
      */
     protected $module;
 
@@ -240,7 +240,7 @@ class ModuleGenerator extends Generator
     /**
      * Get the plugin instance.
      *
-     * @return \Juzaweb\Plugin\Support\Plugin
+     * @return \Juzaweb\Plugin\Abstracts\Plugin
      */
     public function getModule()
     {

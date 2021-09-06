@@ -7,7 +7,7 @@ use Illuminate\Console\Command;
 use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Support\Str;
 use Juzaweb\Plugin\Contracts\RepositoryInterface;
-use Juzaweb\Plugin\Support\Plugin;
+use Juzaweb\Plugin\Abstracts\Plugin;
 use Juzaweb\Plugin\Support\Config\GenerateConfigReader;
 use Juzaweb\Plugin\Traits\ModuleCommandTrait;
 use RuntimeException;

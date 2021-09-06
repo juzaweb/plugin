@@ -77,7 +77,7 @@ abstract class GeneratorCommand extends Command
     /**
      * Get class namespace.
      *
-     * @param \Juzaweb\Plugin\Support\Plugin $module
+     * @param \Juzaweb\Plugin\Abstracts\Plugin $module
      *
      * @return string
      */

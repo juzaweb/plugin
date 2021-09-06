@@ -14,27 +14,14 @@
 
 namespace Juzaweb\Plugin\Providers;
 
-use Composer\Autoload\ClassLoader;
-use Illuminate\Support\Str;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Database\Eloquent\Factory;
 use Juzaweb\Core\Facades\HookAction;
+use Illuminate\Support\Arr;
 
 class AutoloadServiceProvider extends ServiceProvider
 {
     public function boot()
-    {
-        $this->bootPlugins();
-    }
-
-    public function register()
-    {
-        if (config('plugin.autoload')) {
-            $this->autoloadPlugins();
-        }
-    }
-
-    protected function autoloadPlugins()
     {
         $plugins = $this->getActivePlugins();
         if (empty($plugins)) {
@@ -42,35 +29,53 @@ class AutoloadServiceProvider extends ServiceProvider
         }
 
         $pluginsFolder = $this->getPluginsPath();
-        $loader = new ClassLoader();
+        foreach ($plugins as $pluginInfo) {
+            foreach ($pluginInfo as $key => $item) {
+                $path = $pluginsFolder . '/' . $item['path'];
+                $namespace = Arr::get($item, 'namespace');
+                $domain = Arr::get($item, 'domain');
+
+                if (is_dir($path) && $namespace && $domain) {
+                    $this->bootResources($path, $namespace, $domain);
+                    $actionPath = $path .'/../actions';
+
+                    if (is_dir($actionPath)) {
+                        HookAction::loadActionForm($actionPath);
+                    }
+                }
+            }
+        }
+    }
+
+    public function register()
+    {
+        $plugins = $this->getActivePlugins();
+        if (empty($plugins)) {
+            return;
+        }
+
+        $pluginsFolder = $this->getPluginsPath();
 
         foreach ($plugins as $pluginInfo) {
             foreach ($pluginInfo as $key => $item) {
                 $path = $pluginsFolder . '/' . $item['path'];
-                $namespace = $item['namespace'] ?? '';
+                $namespace = Arr::get($item, 'namespace');
 
                 if (is_dir($path) && $namespace) {
-                    $this->registerPlugin($path, $namespace);
+                    $this->registerPlugin($path);
                 }
             }
         }
-
-        $loader->register(true);
     }
 
-    protected function registerPlugin($path, $namespace)
+    protected function registerPlugin($path)
     {
-        $namespace = str_replace('\\', '/', $namespace);
-        $namespace = Str::lower(trim($namespace, '/'));
-        $snakeName = Str::snake(preg_replace('/[^0-9a-z]/', ' ', Str::lower($namespace)));
-
         $this->registerDatabase($path);
     }
 
     protected function registerDatabase($path)
     {
-        //$this->loadMigrationsFrom($path . '/database/migrations');
-        if (!app()->environment('production') && $this->app->runningInConsole()) {
+        if ($this->app->runningInConsole()) {
             app(Factory::class)->load($path . '/database/factories');
         }
     }
@@ -88,68 +93,38 @@ class AutoloadServiceProvider extends ServiceProvider
 
     protected function getPluginsPath()
     {
-        return config('plugin.paths.modules');
+        return base_path('plugins');
     }
 
-    protected function bootPlugins()
-    {
-        $plugins = $this->getActivePlugins();
-        if (empty($plugins)) {
-            return;
-        }
-
-        $pluginsFolder = $this->getPluginsPath();
-        foreach ($plugins as $pluginInfo) {
-            foreach ($pluginInfo as $key => $item) {
-                $path = $pluginsFolder . '/' . $item['path'];
-                $namespace = $item['namespace'] ?? '';
-                $snakeName = Str::snake(preg_replace('/[^0-9a-z]/', ' ', Str::lower($namespace)));
-
-                if (is_dir($path) && $namespace) {
-                    $this->bootActions($path, $namespace, $snakeName);
-                }
-            }
-        }
-    }
-
-    protected function bootActions($path, $namespace, $snakeName)
-    {
-        $actionPath = $path .'/../actions';
-        if (is_dir($actionPath)) {
-            $this->bootViews($path, $namespace, $snakeName);
-            HookAction::loadActionForm($actionPath);
-        }
-    }
-
-    public function bootViews($path, $namespace, $snakeName)
+    public function bootResources($path, $namespace, $domain)
     {
         $sourcePath = $path .'/resources/views';
         $langPath = $path . '/resources/lang';
         $assetsPath = $path .'/resources/assets';
 
         if (is_dir($sourcePath)) {
-            $this->loadViewsFrom($sourcePath, $snakeName);
+            $this->loadViewsFrom($sourcePath, $domain);
 
-            $viewPublic = resource_path('views/vendor/' . $snakeName);
+            $viewPublic = resource_path('views/vendor/' . $domain);
             $this->publishes([
                 $sourcePath => $viewPublic,
-            ], $snakeName . '_views');
+            ], $domain . '_views');
         }
 
         if (is_dir($langPath)) {
-            $this->loadTranslationsFrom($langPath, $snakeName);
-            $langPublic = resource_path('lang/vendor/' . $snakeName);
+            $this->loadTranslationsFrom($langPath, $domain);
+            $langPublic = resource_path('lang/vendor/' . $domain);
 
             $this->publishes([
                 $langPath => $langPublic,
-            ], $snakeName . '_lang');
+            ], $domain . '_lang');
         }
 
         if (is_dir($assetsPath)) {
             $assetsPublic = public_path('plugins/' . $namespace . '/assets');
             $this->publishes([
                 $assetsPath => $assetsPublic,
-            ], $snakeName . '_assets');
+            ], $domain . '_assets');
         }
     }
 }

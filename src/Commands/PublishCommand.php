@@ -3,7 +3,7 @@
 namespace Juzaweb\Plugin\Commands;
 
 use Illuminate\Console\Command;
-use Juzaweb\Plugin\Support\Plugin;
+use Juzaweb\Plugin\Abstracts\Plugin;
 use Juzaweb\Plugin\Publishing\AssetPublisher;
 use Symfony\Component\Console\Input\InputArgument;
 

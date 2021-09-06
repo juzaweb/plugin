@@ -7,9 +7,10 @@ use Juzaweb\Plugin\Contracts\ActivatorInterface;
 use Juzaweb\Plugin\Contracts\RepositoryInterface;
 use Juzaweb\Plugin\Exceptions\InvalidActivatorClass;
 use Juzaweb\Plugin\Laravel\LaravelFileRepository;
+use Juzaweb\Plugin\Abstracts\PluginServiceProvider as BaseServiceProvider;
 use Juzaweb\Plugin\Support\Stub;
 
-class PluginServiceProvider extends ModulesServiceProvider
+class PluginServiceProvider extends BaseServiceProvider
 {
     /**
      * Booting the package.

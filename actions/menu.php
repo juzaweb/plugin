@@ -6,10 +6,6 @@
  * @author     The Anh Dang <dangtheanh16@gmail.com>
  * @link       https://juzaweb.com/cms
  * @license    MIT
- *
- * Created by JUZAWEB.
- * Date: 7/10/2021
- * Time: 3:18 PM
  */
 
 use Juzaweb\Core\Facades\HookAction;

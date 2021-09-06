@@ -23,14 +23,6 @@ return [
     'enable_upload' => true,
 
     /**
-     * Enable autoload plugins
-     * If disable, you can require plugin by composer
-     *
-     * Default: true
-     */
-    'autoload' => true,
-
-    /**
      * Plugins path
      *
      * This path used for save the generated plugin. This path also will added

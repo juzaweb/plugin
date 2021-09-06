@@ -2,7 +2,7 @@
 
 namespace Juzaweb\Plugin\Laravel;
 
-use Juzaweb\Plugin\FileRepository;
+use Juzaweb\Plugin\Abstracts\FileRepository;
 
 class LaravelFileRepository extends FileRepository
 {

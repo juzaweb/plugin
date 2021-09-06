@@ -9,7 +9,7 @@ use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Filesystem\Filesystem;
 use Juzaweb\Plugin\Contracts\ActivatorInterface;
 use Juzaweb\Plugin\Exceptions\ModuleNotFoundException;
-use Juzaweb\Plugin\Support\Plugin;
+use Juzaweb\Plugin\Abstracts\Plugin;
 
 class FileActivator implements ActivatorInterface
 {
@@ -93,6 +93,7 @@ class FileActivator implements ActivatorInterface
 
     /**
      * @inheritDoc
+     * @throws ModuleNotFoundException
      */
     public function enable(Plugin $module): void
     {
@@ -101,6 +102,7 @@ class FileActivator implements ActivatorInterface
 
     /**
      * @inheritDoc
+     * @throws ModuleNotFoundException
      */
     public function disable(Plugin $module): void
     {
@@ -110,7 +112,7 @@ class FileActivator implements ActivatorInterface
     /**
      * @inheritDoc
      */
-    public function hasStatus(Plugin $module, bool $status): bool
+    public function hasStatus(Plugin $module, $status): bool
     {
         if (!isset($this->modulesStatuses[$module->getName()])) {
             return $status === false;
@@ -121,8 +123,9 @@ class FileActivator implements ActivatorInterface
 
     /**
      * @inheritDoc
+     * @throws ModuleNotFoundException
      */
-    public function setActive(Plugin $module, bool $active): void
+    public function setActive(Plugin $module, $active): void
     {
         $this->setActiveByName($module->getName(), $active);
     }
@@ -130,7 +133,7 @@ class FileActivator implements ActivatorInterface
     /**
      * @inheritDoc
      */
-    public function setActiveByName(string $name, bool $status): void
+    public function setActiveByName($name, $status): void
     {
         if ($status) {
             $pluginFile = base_path('plugins') . '/' . $name . '/composer.json';
@@ -138,6 +141,7 @@ class FileActivator implements ActivatorInterface
 
             if (isset($setting['autoload']['psr-4'])) {
                 $psr4 = $setting['autoload']['psr-4'];
+                $domain = $setting['extra']['juzaweb']['domain'];
                 $classMap = [];
 
                 foreach ($psr4 as $key => $path) {
@@ -147,13 +151,14 @@ class FileActivator implements ActivatorInterface
 
                     $classMap[] = [
                         'namespace' => $key,
-                        'path' => $name . '/' . $path
+                        'path' => $name . '/' . $path,
+                        'domain' => $domain
                     ];
                 }
 
                 $this->modulesStatuses[$name] = $classMap;
             } else {
-                throw new ModuleNotFoundException("Plugin ". $name . " does not exists.");
+                throw new ModuleNotFoundException("Plugin [". $name . "] does not exists.");
             }
 
         } else {

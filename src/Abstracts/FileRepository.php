@@ -1,6 +1,6 @@
 <?php
 
-namespace Juzaweb\Plugin;
+namespace Juzaweb\Plugin\Abstracts;
 
 use Countable;
 use Illuminate\Cache\CacheManager;
@@ -8,11 +8,13 @@ use Illuminate\Container\Container;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use Illuminate\Contracts\Routing\UrlGenerator;
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Illuminate\Support\Traits\Macroable;
 use Juzaweb\Plugin\Contracts\RepositoryInterface;
 use Juzaweb\Plugin\Exceptions\InvalidAssetPath;
 use Juzaweb\Plugin\Exceptions\ModuleNotFoundException;
+use Juzaweb\Plugin\Json;
 use Juzaweb\Plugin\Process\Installer;
 use Juzaweb\Plugin\Process\Updater;
 
@@ -129,7 +131,7 @@ abstract class FileRepository implements RepositoryInterface, Countable
      * @param Container $app
      * @param string $args
      * @param string $path
-     * @return \Juzaweb\Plugin\Support\Plugin
+     * @return \Juzaweb\Plugin\Abstracts\Plugin
      */
     abstract protected function createModule(...$args);
 
@@ -150,9 +152,23 @@ abstract class FileRepository implements RepositoryInterface, Countable
             is_array($manifests) || $manifests = [];
 
             foreach ($manifests as $manifest) {
-                $name = Json::make($manifest)->get('name');
+                $info = Json::make($manifest)->getAttributes();
+                $extra = Arr::get($info, 'extra');
 
-                $modules[$name] = $this->createModule($this->app, $name, dirname($manifest));
+                if ($jw = Arr::get($extra, 'juzaweb', [])) {
+                    $pluginName = Arr::get($jw, 'name');
+                }
+
+                if (empty($pluginName)) {
+                    continue;
+                }
+
+                $name = Arr::get($info, 'name');
+                $modules[$name] = $this->createModule(
+                    $this->app,
+                    $name,
+                    dirname($manifest)
+                );
             }
         }
 
@@ -183,10 +199,8 @@ abstract class FileRepository implements RepositoryInterface, Countable
     protected function formatCached($cached)
     {
         $modules = [];
-
         foreach ($cached as $name => $module) {
             $path = $module['path'];
-
             $modules[$name] = $this->createModule($this->app, $name, $path);
         }
 
@@ -309,7 +323,7 @@ abstract class FileRepository implements RepositoryInterface, Countable
      */
     public function getPath() : string
     {
-        return $this->path ?: $this->config('paths.modules', base_path('Modules'));
+        return $this->path ?: base_path('plugins');
     }
 
     /**
@@ -335,7 +349,7 @@ abstract class FileRepository implements RepositoryInterface, Countable
     /**
      * @inheritDoc
      */
-    public function find(string $name)
+    public function find($name)
     {
         foreach ($this->all() as $module) {
             if ($module->getLowerName() === strtolower($name)) {
@@ -349,7 +363,7 @@ abstract class FileRepository implements RepositoryInterface, Countable
     /**
      * @inheritDoc
      */
-    public function findByAlias(string $alias)
+    public function findByAlias($alias)
     {
         foreach ($this->all() as $module) {
             if ($module->getAlias() === $alias) {
@@ -381,11 +395,11 @@ abstract class FileRepository implements RepositoryInterface, Countable
      *
      * @param $name
      *
-     * @return Module
+     * @return Plugin
      *
      * @throws ModuleNotFoundException
      */
-    public function findOrFail(string $name)
+    public function findOrFail($name)
     {
         $module = $this->find($name);
 
@@ -427,7 +441,7 @@ abstract class FileRepository implements RepositoryInterface, Countable
     /**
      * @inheritDoc
      */
-    public function assetPath(string $module) : string
+    public function assetPath($module) : string
     {
         return $this->config('paths.assets') . '/' . $module;
     }
@@ -435,7 +449,7 @@ abstract class FileRepository implements RepositoryInterface, Countable
     /**
      * @inheritDoc
      */
-    public function config(string $key, $default = null)
+    public function config($key, $default = null)
     {
         return $this->config->get('plugin.' . $key, $default);
     }
@@ -491,7 +505,10 @@ abstract class FileRepository implements RepositoryInterface, Countable
      */
     public function getUsedNow() : string
     {
-        return $this->findOrFail($this->getFiles()->get($this->getUsedStoragePath()));
+        return $this->findOrFail(
+            $this->getFiles()
+                ->get($this->getUsedStoragePath())
+        );
     }
 
     /**
@@ -537,7 +554,7 @@ abstract class FileRepository implements RepositoryInterface, Countable
     /**
      * @inheritDoc
      */
-    public function isEnabled(string $name) : bool
+    public function isEnabled($name) : bool
     {
         return $this->findOrFail($name)->isEnabled();
     }
@@ -545,7 +562,7 @@ abstract class FileRepository implements RepositoryInterface, Countable
     /**
      * @inheritDoc
      */
-    public function isDisabled(string $name) : bool
+    public function isDisabled($name) : bool
     {
         return !$this->isEnabled($name);
     }
@@ -575,7 +592,7 @@ abstract class FileRepository implements RepositoryInterface, Countable
     /**
      * @inheritDoc
      */
-    public function delete(string $name) : bool
+    public function delete($name) : bool
     {
         return $this->findOrFail($name)->delete();
     }
